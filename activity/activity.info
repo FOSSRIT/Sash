@@ -1,0 +1,8 @@
+[Activity]
+name = (Sash)
+bundle_id = org.laptop.SashActivity
+icon = 
+class = sugar-activity SashActivity.SashActivity
+show_launcher = yes
+activity_version = 1
+license = GPLv2+

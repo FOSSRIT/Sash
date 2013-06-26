@@ -1,7 +1,7 @@
 [Activity]
 name = (Sash)
 bundle_id = org.laptop.SashActivity
-icon = 
+icon = sash.svg 
 class = sugar-activity SashActivity.SashActivity
 show_launcher = yes
 activity_version = 1

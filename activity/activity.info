@@ -1,5 +1,5 @@
 [Activity]
-name = (Sash)
+name = Sash
 bundle_id = org.laptop.SashActivity
 icon = sash.svg 
 class = sugar-activity SashActivity.SashActivity

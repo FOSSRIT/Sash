@@ -16,7 +16,7 @@ class SashActivity(activity.Activity):
         print "activity running"
 
     #creates a simple textfile with filetext as the data to put into the file
-    def _writetextfile(self, filename, filetext='This is some test text'):
+    def _writetextfile(self, filename, filetext='This is a test text file'):
         #create a datastore object
         file_dsobject = datastore.create()
         #write metadata
@@ -35,3 +35,12 @@ class SashActivity(activity.Activity):
 
         datastore.write(file_dsobject)
         return file_dsobject
+        
+        self._writetextfile(self, 'test', '')
+        ds_objects, num_objects = datastore.find({'title':'test'})
+        print '--------------------QUERY RESULTS--------------------'
+        print "Number of Objects: " + str(num_objects)
+        
+        for i in xrange (num_objects):
+			print "File Path: " + ds_object[i].get_file_path()
+			print "Title: " + ds_objects[i].metadata['title']

@@ -35,12 +35,13 @@ class SashActivity(activity.Activity):
 
         datastore.write(file_dsobject)
         return file_dsobject
-        
+
+
         self._writetextfile(self, 'test', '')
         ds_objects, num_objects = datastore.find({'title':'test'})
         print '--------------------QUERY RESULTS--------------------'
         print "Number of Objects: " + str(num_objects)
-        
+
         for i in xrange (num_objects):
 			print "File Path: " + ds_object[i].get_file_path()
 			print "Title: " + ds_objects[i].metadata['title']

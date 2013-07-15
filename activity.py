@@ -1,5 +1,5 @@
 """
-Sash Activity
+sash Activity
 """
 from sugar.activity import activity
 from sugar.datastore import datastore

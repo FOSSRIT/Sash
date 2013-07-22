@@ -1,32 +1,30 @@
-#Sash  activity
+#!/usr/bin/python
 from gi.repository import Gtk
 
-#closes application on "delete event"
+DEFAULT_WINDOW_SIZE = {'width': 1200, 'height': 900}
 
 
-#makes the gtk window and add images
-def create():
-    window = Gtk.Window()
-    window.connect("delete-event", Gtk.main_quit)
-    badge1 = Gtk.Image()
-    badge1.set_from_file("images/testpic1.png")
-    window.add(badge1)
-    badge1.show()
-    window.show_all()
+class Sash(Gtk.Window):
 
+    def __init__(self):
+        Gtk.Window.__init__(self, title="Sash")
+        self.set_default_size(DEFAULT_WINDOW_SIZE['width'],
+                              DEFAULT_WINDOW_SIZE['height'])
+        self.grid = Gtk.Grid(hexpand=True)
+        self.add(self.grid)
 
-def main():
-    Gtk.main()
-    create()
+        for y in range(3):
+            for x in range(3):
+                badge = Gtk.Image(hexpand=True)
+                badge.set_from_file("images/testpic{}.png".format(x+1))
+                self.grid.attach(badge, x, y, 1, 1)
+
+        self.grid.show_all()
+
+        self.connect("delete-event", Gtk.main_quit)
+        self.show()
+        Gtk.main()
+
 
 if __name__ == "__main__":
-    create()
-    Gtk.main()
-
-#load images
-#show images
-#----background
-#----badges
-#link to lemonade stand
-#badge conditionals
-#scroll bar
+    Sash()

@@ -1,33 +1,32 @@
 #Sash  activity
-
-import pygtk
-import gtk
+from gi.repository import Gtk
 
 #closes application on "delete event"
-def close_application(widget, event, data = None):
-    gtk.main_quit()
-    return False
-#makes the gtk window
-def __init__(self):
-    window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    window.connect("delete_event", close_application)
-    window.show()
+
+
+#makes the gtk window and add images
+def create():
+    window = Gtk.Window()
+    window.connect("delete-event", Gtk.main_quit)
+    badge1 = Gtk.Image()
+    badge1.set_from_file("images/testpic1.png")
+    window.add(badge1)
+    badge1.show()
+    window.show_all()
+
+
+def main():
+    Gtk.main()
+    create()
+
+if __name__ == "__main__":
+    create()
+    Gtk.main()
+
 #load images
-badge1 = gtk.Image()
-badge1.set_from_file("images/testpic1.png")
 #show images
 #----background
 #----badges
-badge1.show()
-
 #link to lemonade stand
-
 #badge conditionals
-
 #scroll bar
-
-#main
-def main():
-    gtk.main()
-    return 0
-

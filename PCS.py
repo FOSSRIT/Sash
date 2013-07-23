@@ -18,12 +18,19 @@ class Sash(Gtk.Window):
         self.add(self.scrolled_window)
         self.grid = Gtk.Grid(hexpand=True)
         self.scrolled_window.add_with_viewport(self.grid)
-        #display badges in the grid
-        for y in range(3):
-            for x in range(3):
-                badge = Gtk.Image(hexpand=True)
-                badge.set_from_file("badges/testpic{}.png".format(x+1))
-                self.grid.attach(badge, x, y, 1, 1)
+        #self.options = Gtk.Box(spacing=10)
+        #self.add(self.options)
+
+        #self.sort_name = Gtk.Button(label="Sort By Name")
+        #self.sort_name.connect("clicked", self.sort_by_name)
+        #self.options.pack_start(self.sort_name, True, False)
+
+        #self.sort_date = Gtk.Button(label="Sort By Date")
+        #self.sort_date.connect("clicked", self.sort_by_name)
+
+        self.grid = Gtk.Grid(hexpand=True)
+        self.scrolled_window.add_with_viewport(self.grid)
+        
 
         path = os.path.join(os.path.split(__file__)[0], 'badges')
         badges = [f for f in os.listdir(path) if os.path.isfile(

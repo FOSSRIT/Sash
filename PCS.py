@@ -1,6 +1,8 @@
 #!/usr/bin/python
 from gi.repository import Gtk
+from sugar.datastore import datastore
 import os
+import json
 
 DEFAULT_WINDOW_SIZE = {'width': 1200, 'height': 900}
 
@@ -11,6 +13,25 @@ class Sash(Gtk.Window):
         Gtk.Window.__init__(self, title="Sash")
         self.set_default_size(DEFAULT_WINDOW_SIZE['width'],
                               DEFAULT_WINDOW_SIZE['height'])
+
+        #self.remove_badges()
+
+        # Find all of the activities that award badges
+        ds_objects, num_objects = datastore.find(
+            {'has_badges': 'True'})
+
+        # Create a list of tuples of all the activites
+        list_activites = [(ds_object.metadata['activity'],
+                           json.loads(ds_object.metadata['badge_list']))
+                          for ds_object in ds_objects]
+
+        # Creates a dictionary of earned badges and populates it
+        self.earned_badges = {}
+        for activity, badges in list_activites:
+            for badge in badges.keys():
+                self.earned_badges[badge] = {'info': badges[badge]['criteria'],
+                                             'time': badges[badge]['time'],
+                                             'activity': activity}
 
         # Set up all the windows
         self.window = Gtk.Grid()
@@ -36,12 +57,12 @@ class Sash(Gtk.Window):
         # Display the badges
         self.draw_badges()
 
+        # Connects an exit function to the window
         self.connect("delete-event", Gtk.main_quit)
         self.show_all()
         Gtk.main()
 
-    def draw_badges(self, sort_name=False, sort_date=False,
-                    sort_activity=False):
+    def draw_badges(self, sort=False, sort_by=''):
         """
         Reads the user's badges and displays them in the badge_window
         """
@@ -51,25 +72,29 @@ class Sash(Gtk.Window):
         self.badges = [f for f in os.listdir(path) if os.path.isfile(
             os.path.join(path, f))]
 
-        index = 0
+        # Check if the badges need to be sorted by name
+        if sort:
+            badges = sorted(self.earned_badges.keys(),
+                            key=lambda x: x[sort_by])
+
+        # If no sort, just display them how they are
+        else:
+            badges = self.earned_badges.keys()
+
         column = 0
         row = 1
-
-        # Check if the badges need to be sorted by name
-        if sort_name:
-            badges = sorted(self.badges)
-        else:
-            badges = self.badges
-
         # Loop through all of the badges
-        while index < len(badges):
+        for name in badges:
 
             # Create an image and tooltip for the badge and display it
             badge = Gtk.Image(hexpand=True)
-            badge.set_from_file(os.path.join(path, badges[index]))
-            badge.set_tooltip_text("Name: " +
-                                   badges[index].rsplit('.', 1)[0] +
-                                   "\nDate Acquired: 7/21/13")
+            badge.set_from_file(os.path.join(path, name + '.png'))
+            badge.set_tooltip_text("Name: " + name +
+                                   "\nDate Acquired: " +
+                                   self.earned_badges[name]['time'] +
+                                   "\nActivity: " +
+                                   self.earned_badges[name]['activity'] +
+                                   "\n\n" + self.earned_badges[name]['info'])
             self.badge_window.attach(badge, column, row, 1, 1)
 
             # If the next badge column is less than 2, increment the column
@@ -81,8 +106,6 @@ class Sash(Gtk.Window):
             else:
                 column = 0
                 row += 1
-
-            index += 1
 
         # Show all the badges on the window
         self.badge_window.show_all()
@@ -111,6 +134,9 @@ class Sash(Gtk.Window):
         self.toolbar.show_all()
 
     def sort_by_date(self, widget):
+        """
+        Sorts the user's badges by date acquired
+        """
         print "sort date"
 
     def sort_by_name(self, widget):
@@ -123,10 +149,26 @@ class Sash(Gtk.Window):
             badge.destroy()
 
         # Display the user's badges sorted
-        self.draw_badges(True)
+        self.draw_badges(True, 'name')
 
     def sort_by_activity(self, widget):
+        """
+        Sorts the user's badges by actvitiy
+        """
         print "sort activity"
+
+    def remove_badges(self):
+        """
+        Removes all of the user's badges from their Sash
+        """
+
+        # Find all of the activities that award badges
+        ds_objects, num_objects = datastore.find(
+            {'has_badges': 'True'})
+
+        for x in range(num_objects):
+            ds_objects[x].destroy()
+            datastore.delete(ds_objects[x].object_id)
 
 
 if __name__ == "__main__":

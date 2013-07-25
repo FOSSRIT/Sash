@@ -29,8 +29,10 @@ class Sash(Gtk.Window):
         self.earned_badges = {}
         for activity, badges in list_activites:
             for badge in badges.keys():
+
                 self.earned_badges[badge] = {'info': badges[badge]['criteria'],
                                              'time': badges[badge]['time'],
+                                             'name': badge,
                                              'activity': activity}
 
         # Set up all the windows
@@ -74,28 +76,29 @@ class Sash(Gtk.Window):
 
         # Check if the badges need to be sorted by name
         if sort:
-            badges = sorted(self.earned_badges.keys(),
+            badges = sorted(self.earned_badges.values(),
                             key=lambda x: x[sort_by])
 
         # If no sort, just display them how they are
         else:
-            badges = self.earned_badges.keys()
+            badges = self.earned_badges.values()
 
         column = 0
         row = 1
         # Loop through all of the badges
-        for name in badges:
+        for badge in badges:
 
             # Create an image and tooltip for the badge and display it
-            badge = Gtk.Image(hexpand=True)
-            badge.set_from_file(os.path.join(path, name + '.png'))
-            badge.set_tooltip_text("Name: " + name +
-                                   "\nDate Acquired: " +
-                                   self.earned_badges[name]['time'] +
-                                   "\nActivity: " +
-                                   self.earned_badges[name]['activity'] +
-                                   "\n\n" + self.earned_badges[name]['info'])
-            self.badge_window.attach(badge, column, row, 1, 1)
+            badge_image = Gtk.Image(hexpand=True)
+            badge_image.set_from_file(os.path.join(path,
+                                      badge['name'] + '.png'))
+            badge_image.set_tooltip_text("Name: " + badge['name'] +
+                                         "\nDate Acquired: " +
+                                         badge['time'] +
+                                         "\nActivity: " +
+                                         badge['activity'] +
+                                         "\n\n" + badge['info'])
+            self.badge_window.attach(badge_image, column, row, 1, 1)
 
             # If the next badge column is less than 2, increment the column
             if column < 2:
@@ -106,6 +109,13 @@ class Sash(Gtk.Window):
             else:
                 column = 0
                 row += 1
+
+        # Check if the user has no badges
+        if len(self.earned_badges) == 0:
+            message = Gtk.Label(label='You currently have no badges!' +
+                                '\nGo play some games to unlock badges!',
+                                hexpand=True, justify=Gtk.Justification.CENTER)
+            self.badge_window.attach(message, 1, 0, 1, 1)
 
         # Show all the badges on the window
         self.badge_window.show_all()
@@ -137,7 +147,12 @@ class Sash(Gtk.Window):
         """
         Sorts the user's badges by date acquired
         """
-        print "sort date"
+        # Remove every badge that is currently being displayed
+        for badge in self.badge_window.get_children():
+            badge.destroy()
+
+        # Display the user's badges sorted
+        self.draw_badges(True, 'time')
 
     def sort_by_name(self, widget):
         """
@@ -155,7 +170,13 @@ class Sash(Gtk.Window):
         """
         Sorts the user's badges by actvitiy
         """
-        print "sort activity"
+
+        # Remove every badge that is currently being displayed
+        for badge in self.badge_window.get_children():
+            badge.destroy()
+
+        # Display the user's badges sorted
+        self.draw_badges(True, 'activity')
 
     def remove_badges(self):
         """

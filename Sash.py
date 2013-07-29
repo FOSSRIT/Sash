@@ -23,7 +23,8 @@ class Sash(Gtk.Window):
         # Create a list of tuples of all the activites
         list_activites = [(ds_object.metadata['activity'],
                            json.loads(ds_object.metadata['badge_list']))
-                          for ds_object in ds_objects]
+                          for ds_object in ds_objects
+                          if 'has_badges' in ds_object.metadata]
 
         # Creates a dictionary of earned badges and populates it
         self.earned_badges = {}

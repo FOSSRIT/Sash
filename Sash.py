@@ -14,7 +14,8 @@ class Sash(Gtk.Window):
         self.set_default_size(DEFAULT_WINDOW_SIZE['width'],
                               DEFAULT_WINDOW_SIZE['height'])
 
-        #self.remove_badges()
+        # How are the badges currently being sorted
+        self.current_sort = ''
 
         # Find all of the activities that award badges
         ds_objects, num_objects = datastore.find(
@@ -41,6 +42,7 @@ class Sash(Gtk.Window):
         self.window = Gtk.Grid()
         self.toolbar = Gtk.Grid(hexpand=True,
                                 column_spacing=15,
+                                row_spacing=10,
                                 margin_left=10)
 
         self.badge_window = Gtk.Grid(hexpand=True, vexpand=True)
@@ -66,7 +68,7 @@ class Sash(Gtk.Window):
         self.show_all()
         Gtk.main()
 
-    def draw_badges(self, sort=False, sort_by=''):
+    def draw_badges(self, sort=False, ascending=True):
         """
         Reads the user's badges and displays them in the badge_window
 
@@ -79,10 +81,21 @@ class Sash(Gtk.Window):
 
         # Sort the badges a specific way
         if sort:
+
+            # Sorts the badges in ascending order (by default)
             badges = sorted(self.earned_badges.values(),
-                            key=lambda x: x[sort_by])
+                            key=lambda x: x[self.current_sort])
+#            if self.current_sort == 'time':
+#                badges = reversed(badges)
+
+            # Sorts the badges in descending order
+            if not ascending:
+                badges = reversed(badges)
         else:
+
             badges = self.earned_badges.values()
+            if not ascending:
+                badges = reversed(badges)
 
         column = 0
         row = 1
@@ -143,8 +156,40 @@ class Sash(Gtk.Window):
         self.sort_activity.connect("clicked", self.sort_by_activity)
         self.toolbar.attach(self.sort_activity, 2, 0, 1, 1)
 
+        # Create a button to display the current sort in ascending order
+        self.ascending = Gtk.Button(label="Ascending")
+        self.ascending.connect("clicked", self.ascending_order)
+        self.toolbar.attach(self.ascending, 0, 1, 1, 1)
+
+        # Create a button to display the current sort in descending order
+        self.descending = Gtk.Button(label="Descending")
+        self.descending.connect("clicked", self.descending_order)
+        self.toolbar.attach(self.descending, 1, 1, 1, 1)
+
         # Display all toolbar items
         self.toolbar.show_all()
+
+    def ascending_order(self, widget):
+
+        # Remove every badge that is currently being displayed
+        for badge in self.badge_window.get_children():
+            badge.destroy()
+
+        if self.current_sort == '':
+            self.draw_badges(False, True)
+        else:
+            self.draw_badges(True)
+
+    def descending_order(self, widget):
+
+        # Remove every badge that is currently being displayed
+        for badge in self.badge_window.get_children():
+            badge.destroy()
+
+        if self.current_sort == '':
+            self.draw_badges(False, False)
+        else:
+            self.draw_badges(True, False)
 
     def sort_by_date(self, widget):
         """
@@ -155,7 +200,8 @@ class Sash(Gtk.Window):
             badge.destroy()
 
         # Display the user's badges sorted
-        self.draw_badges(True, 'time')
+        self.current_sort = 'time'
+        self.draw_badges(True)
 
     def sort_by_name(self, widget):
         """
@@ -167,7 +213,8 @@ class Sash(Gtk.Window):
             badge.destroy()
 
         # Display the user's badges sorted
-        self.draw_badges(True, 'name')
+        self.current_sort = 'name'
+        self.draw_badges(True)
 
     def sort_by_activity(self, widget):
         """
@@ -179,7 +226,8 @@ class Sash(Gtk.Window):
             badge.destroy()
 
         # Display the user's badges sorted
-        self.draw_badges(True, 'activity')
+        self.current_sort = 'activity'
+        self.draw_badges(True)
 
     def remove_badges(self):
         """

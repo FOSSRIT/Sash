@@ -85,8 +85,6 @@ class Sash(Gtk.Window):
             # Sorts the badges in ascending order (by default)
             badges = sorted(self.earned_badges.values(),
                             key=lambda x: x[self.current_sort])
-#            if self.current_sort == 'time':
-#                badges = reversed(badges)
 
             # Sorts the badges in descending order
             if not ascending:

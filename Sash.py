@@ -14,6 +14,9 @@ class Sash(Gtk.Window):
         self.set_default_size(DEFAULT_WINDOW_SIZE['width'],
                               DEFAULT_WINDOW_SIZE['height'])
 
+        # Filtered string
+        self.search_text = ''
+
         # How are the badges currently being sorted
         self.current_sort = ''
 
@@ -45,7 +48,13 @@ class Sash(Gtk.Window):
                                 row_spacing=10,
                                 margin_left=10)
 
-        self.badge_window = Gtk.Grid(hexpand=True, vexpand=True)
+        self.badge_window = Gtk.Grid(hexpand=True,
+                                     column_spacing=120,
+                                     row_spacing=90,
+                                     margin_left=35,
+                                     margin_top=35)
+
+        self.badge_background = Gtk.Grid(hexpand=True)
         self.scrolled_window = Gtk.ScrolledWindow()
         self.scrolled_window.set_border_width(10)
         self.scrolled_window.set_policy(
@@ -55,7 +64,8 @@ class Sash(Gtk.Window):
         self.add(self.window)
         self.window.attach(self.toolbar, 0, 0, 1, 1)
         self.window.attach(self.scrolled_window, 0, 5, 1, 3)
-        self.scrolled_window.add_with_viewport(self.badge_window)
+        self.badge_background.attach(self.badge_window, 0, 0, 1, 3)
+        self.scrolled_window.add_with_viewport(self.badge_background)
 
         # Display the toolbar
         self.build_toolbar()
@@ -76,14 +86,27 @@ class Sash(Gtk.Window):
         :param sort: Sort the badges or not (default does not)
 
         :type sort_by: string
-        :param sort_by: Sort the badges by this key (default does nothing)
         """
+
+        # Clear the current screen of badges
+        for badge in self.badge_window.get_children():
+            badge.destroy()
+
+        badges = []
+
+        # Add badges that contain the specific search text
+        for badge in self.earned_badges.values():
+            if self.search_text.lower() in (
+                    badge['name'].lower() +
+                    badge['activity'].lower() +
+                    badge['time']):
+                badges.append(badge)
 
         # Sort the badges a specific way
         if sort:
 
             # Sorts the badges in ascending order (by default)
-            badges = sorted(self.earned_badges.values(),
+            badges = sorted(badges,
                             key=lambda x: x[self.current_sort])
 
             # Sorts the badges in descending order
@@ -91,7 +114,6 @@ class Sash(Gtk.Window):
                 badges = reversed(badges)
         else:
 
-            badges = self.earned_badges.values()
             if not ascending:
                 badges = reversed(badges)
 
@@ -103,7 +125,7 @@ class Sash(Gtk.Window):
         for badge in badges:
 
             # Create an image and tooltip for the badge and display it
-            badge_image = Gtk.Image(hexpand=True)
+            badge_image = Gtk.Image()
             badge_image.set_from_file(os.path.join(path, badge['bundle_id'],
                                       badge['name'] + '.png'))
             badge_image.set_tooltip_text("Name: " + badge['name'] +
@@ -112,6 +134,14 @@ class Sash(Gtk.Window):
                                          "\nActivity: " +
                                          badge['activity'] +
                                          "\n\n" + badge['info'])
+
+            # Creates a trophy background if it is a new row
+            if column == 0:
+                background_image = Gtk.Image(hexpand=True, vexpand=True)
+                background_image.set_from_file('images/row.png')
+                self.badge_background.attach(
+                    background_image, column, row, 1, 1)
+
             self.badge_window.attach(badge_image, column, row, 1, 1)
 
             # If the next badge column is less than 2, increment the column
@@ -155,47 +185,64 @@ class Sash(Gtk.Window):
         self.toolbar.attach(self.sort_activity, 2, 0, 1, 1)
 
         # Create a button to display the current sort in ascending order
-        self.ascending = Gtk.Button(label="Ascending")
-        self.ascending.connect("clicked", self.ascending_order)
-        self.toolbar.attach(self.ascending, 0, 1, 1, 1)
+        self.toggled = Gtk.ToggleButton(label="Descending Order")
+        self.toggled.connect("toggled", self.ascend_descend)
+        self.toolbar.attach(self.toggled, 0, 1, 1, 1)
 
-        # Create a button to display the current sort in descending order
-        self.descending = Gtk.Button(label="Descending")
-        self.descending.connect("clicked", self.descending_order)
-        self.toolbar.attach(self.descending, 1, 1, 1, 1)
+        # Create a search bar for badges
+        self.search = Gtk.Entry()
+        self.search.set_tooltip_text(
+            "Search for a badge name, activity, or date")
+        self.search.connect("key-release-event", self.search_badge)
+        self.toolbar.attach(self.search, 1, 1, 2, 1)
 
         # Display all toolbar items
         self.toolbar.show_all()
 
-    def ascending_order(self, widget):
+    def ascend_descend(self, widget):
+        """
+        Toggles whether or not to display the current badges
+        in ascending or descending order
+        """
 
-        # Remove every badge that is currently being displayed
-        for badge in self.badge_window.get_children():
-            badge.destroy()
+        # Check if the button is currently toggled (descending order)
+        if widget.get_active():
+            if self.current_sort == '':
+                self.draw_badges(False, False)
+            else:
+                self.draw_badges(True, False)
+
+        # Button is currently untoggled (ascending order)
+        else:
+            if self.current_sort == '':
+                self.draw_badges(False, True)
+            else:
+                self.draw_badges(True)
+
+    def search_badge(self, widget, key):
+        """
+        Search and display badges containing the search text
+        """
+
+        self.search_text = widget.get_text()
+
+        # Display the new search badges
+        self.draw_badges()
+
+    def ascending_order(self, widget):
+        """
+        Sorts the user's badges in ascending order
+        """
 
         if self.current_sort == '':
             self.draw_badges(False, True)
         else:
             self.draw_badges(True)
 
-    def descending_order(self, widget):
-
-        # Remove every badge that is currently being displayed
-        for badge in self.badge_window.get_children():
-            badge.destroy()
-
-        if self.current_sort == '':
-            self.draw_badges(False, False)
-        else:
-            self.draw_badges(True, False)
-
     def sort_by_date(self, widget):
         """
         Sorts the user's badges by date acquired
         """
-        # Remove every badge that is currently being displayed
-        for badge in self.badge_window.get_children():
-            badge.destroy()
 
         # Display the user's badges sorted
         self.current_sort = 'time'
@@ -206,10 +253,6 @@ class Sash(Gtk.Window):
         Sorts the user's badges by name
         """
 
-        # Remove every badge that is currently being displayed
-        for badge in self.badge_window.get_children():
-            badge.destroy()
-
         # Display the user's badges sorted
         self.current_sort = 'name'
         self.draw_badges(True)
@@ -218,10 +261,6 @@ class Sash(Gtk.Window):
         """
         Sorts the user's badges by actvitiy
         """
-
-        # Remove every badge that is currently being displayed
-        for badge in self.badge_window.get_children():
-            badge.destroy()
 
         # Display the user's badges sorted
         self.current_sort = 'activity'

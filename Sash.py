@@ -48,7 +48,13 @@ class Sash(Gtk.Window):
                                 row_spacing=10,
                                 margin_left=10)
 
-        self.badge_window = Gtk.Grid(hexpand=True, vexpand=True)
+        self.badge_window = Gtk.Grid(hexpand=True,
+                                     column_spacing=120,
+                                     row_spacing=90,
+                                     margin_left=35,
+                                     margin_top=35)
+
+        self.badge_background = Gtk.Grid(hexpand=True)
         self.scrolled_window = Gtk.ScrolledWindow()
         self.scrolled_window.set_border_width(10)
         self.scrolled_window.set_policy(
@@ -58,7 +64,8 @@ class Sash(Gtk.Window):
         self.add(self.window)
         self.window.attach(self.toolbar, 0, 0, 1, 1)
         self.window.attach(self.scrolled_window, 0, 5, 1, 3)
-        self.scrolled_window.add_with_viewport(self.badge_window)
+        self.badge_background.attach(self.badge_window, 0, 0, 1, 3)
+        self.scrolled_window.add_with_viewport(self.badge_background)
 
         # Display the toolbar
         self.build_toolbar()
@@ -79,7 +86,6 @@ class Sash(Gtk.Window):
         :param sort: Sort the badges or not (default does not)
 
         :type sort_by: string
-        :param sort_by: Sort the badges by this key (default does nothing)
         """
 
         # Clear the current screen of badges
@@ -119,7 +125,7 @@ class Sash(Gtk.Window):
         for badge in badges:
 
             # Create an image and tooltip for the badge and display it
-            badge_image = Gtk.Image(hexpand=True)
+            badge_image = Gtk.Image()
             badge_image.set_from_file(os.path.join(path, badge['bundle_id'],
                                       badge['name'] + '.png'))
             badge_image.set_tooltip_text("Name: " + badge['name'] +
@@ -128,6 +134,14 @@ class Sash(Gtk.Window):
                                          "\nActivity: " +
                                          badge['activity'] +
                                          "\n\n" + badge['info'])
+
+            # Creates a trophy background if it is a new row
+            if column == 0:
+                background_image = Gtk.Image(hexpand=True, vexpand=True)
+                background_image.set_from_file('images/row.png')
+                self.badge_background.attach(
+                    background_image, column, row, 1, 1)
+
             self.badge_window.attach(badge_image, column, row, 1, 1)
 
             # If the next badge column is less than 2, increment the column
@@ -180,7 +194,7 @@ class Sash(Gtk.Window):
         self.search.set_tooltip_text(
             "Search for a badge name, activity, or date")
         self.search.connect("key-release-event", self.search_badge)
-        self.toolbar.attach(self.search, 0, 2, 1, 1)
+        self.toolbar.attach(self.search, 1, 1, 2, 1)
 
         # Display all toolbar items
         self.toolbar.show_all()
@@ -191,12 +205,14 @@ class Sash(Gtk.Window):
         in ascending or descending order
         """
 
+        # Check if the button is currently toggled (descending order)
         if widget.get_active():
             if self.current_sort == '':
                 self.draw_badges(False, False)
             else:
                 self.draw_badges(True, False)
 
+        # Button is currently untoggled (ascending order)
         else:
             if self.current_sort == '':
                 self.draw_badges(False, True)

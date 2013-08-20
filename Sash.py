@@ -18,7 +18,7 @@ class Sash(Gtk.Window):
         self.search_text = ''
 
         # How are the badges currently being sorted
-        self.current_sort = ''
+        self.current_sort = None
 
         # Find all of the activities that award badges
         ds_objects, num_objects = datastore.find(
@@ -78,7 +78,7 @@ class Sash(Gtk.Window):
         self.show_all()
         Gtk.main()
 
-    def draw_badges(self, sort=False, ascending=True):
+    def draw_badges(self):
         """
         Reads the user's badges and displays them in the badge_window
 
@@ -103,19 +103,15 @@ class Sash(Gtk.Window):
                 badges.append(badge)
 
         # Sort the badges a specific way
-        if sort:
+        if self.current_sort is not None:
 
             # Sorts the badges in ascending order (by default)
             badges = sorted(badges,
                             key=lambda x: x[self.current_sort])
 
-            # Sorts the badges in descending order
-            if not ascending:
-                badges = reversed(badges)
-        else:
-
-            if not ascending:
-                badges = reversed(badges)
+        # Display the badges in descending order if the button is toggled
+        if self.descending.get_active():
+            badges = reversed(badges)
 
         column = 0
         row = 1
@@ -161,25 +157,37 @@ class Sash(Gtk.Window):
         Creates and displays the toolbar
         """
 
+        # Create a container for the radio buttons
+        self.sort_box = Gtk.Box(spacing=6)
+        self.toolbar.attach(self.sort_box, 0, 0, 3, 1)
+
+        # Create a sort by nothing button and add a signal
+        self.sort_none = Gtk.RadioButton(None, "None")
+        self.sort_none.connect("toggled", self.sort_badges, None)
+        self.sort_box.pack_start(self.sort_none, False, False, 0)
+
         # Create a sort by name button and add a signal
-        self.sort_name = Gtk.Button(label="Sort By Name")
-        self.sort_name.connect("clicked", self.sort_by_name)
-        self.toolbar.attach(self.sort_name, 0, 0, 1, 1)
+        self.sort_name = Gtk.RadioButton.new_from_widget(self.sort_none)
+        self.sort_name.set_label("Sort By Name")
+        self.sort_name.connect("toggled", self.sort_badges, 'name')
+        self.sort_box.pack_start(self.sort_name, False, False, 0)
 
         # Create a sort by date button and add a signal
-        self.sort_date = Gtk.Button(label="Sort By Date")
-        self.sort_date.connect("clicked", self.sort_by_date)
-        self.toolbar.attach(self.sort_date, 1, 0, 1, 1)
+        self.sort_date = Gtk.RadioButton.new_from_widget(self.sort_none)
+        self.sort_date.set_label("Sort By Date")
+        self.sort_date.connect("toggled", self.sort_badges, 'time')
+        self.sort_box.pack_start(self.sort_date, False, False, 0)
 
         # Create a sort by activity button and add a signal
-        self.sort_activity = Gtk.Button(label="Sort By Actvitiy")
-        self.sort_activity.connect("clicked", self.sort_by_activity)
-        self.toolbar.attach(self.sort_activity, 2, 0, 1, 1)
+        self.sort_activity = Gtk.RadioButton.new_from_widget(self.sort_none)
+        self.sort_activity.set_label("Sort By Actvitiy")
+        self.sort_activity.connect("toggled", self.sort_badges, 'activity')
+        self.sort_box.pack_start(self.sort_activity, False, False, 0)
 
         # Create a button to display the current sort in ascending order
-        self.toggled = Gtk.ToggleButton(label="Descending Order")
-        self.toggled.connect("toggled", self.ascend_descend)
-        self.toolbar.attach(self.toggled, 0, 1, 1, 1)
+        self.descending = Gtk.ToggleButton(label="Descending Order")
+        self.descending.connect("toggled", self.ascend_descend)
+        self.toolbar.attach(self.descending, 0, 1, 1, 1)
 
         # Create a search bar for badges
         self.search = Gtk.Entry()
@@ -197,66 +205,26 @@ class Sash(Gtk.Window):
         in ascending or descending order
         """
 
-        # Check if the button is currently toggled (descending order)
-        if widget.get_active():
-            if self.current_sort == '':
-                self.draw_badges(False, False)
-            else:
-                self.draw_badges(True, False)
-
-        # Button is currently untoggled (ascending order)
-        else:
-            if self.current_sort == '':
-                self.draw_badges(False, True)
-            else:
-                self.draw_badges(True)
+        # Redisplay the badges
+        self.draw_badges()
 
     def search_badge(self, widget, key):
         """
         Search and display badges containing the search text
         """
 
+        # Save the searched text and draw the new set of badges
         self.search_text = widget.get_text()
-
-        # Display the new search badges
         self.draw_badges()
 
-    def ascending_order(self, widget):
+    def sort_badges(self, widget, sort_type):
         """
-        Sorts the user's badges in ascending order
-        """
-
-        if self.current_sort == '':
-            self.draw_badges(False, True)
-        else:
-            self.draw_badges(True)
-
-    def sort_by_date(self, widget):
-        """
-        Sorts the user's badges by date acquired
+        Sort and display the badges by the sort type provided
         """
 
-        # Display the user's badges sorted
-        self.current_sort = 'time'
-        self.draw_badges(True)
-
-    def sort_by_name(self, widget):
-        """
-        Sorts the user's badges by name
-        """
-
-        # Display the user's badges sorted
-        self.current_sort = 'name'
-        self.draw_badges(True)
-
-    def sort_by_activity(self, widget):
-        """
-        Sorts the user's badges by actvitiy
-        """
-
-        # Display the user's badges sorted
-        self.current_sort = 'activity'
-        self.draw_badges(True)
+        # Save the sort type and draw the new set of badges
+        self.current_sort = sort_type
+        self.draw_badges()
 
     def remove_badges(self):
         """

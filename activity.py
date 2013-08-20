@@ -1,9 +1,6 @@
 #!/usr/bin/python
 from sugar3.activity.activity import Activity
 from Sash import Sash
-#import logging
-
-#_logger = logging.getlogger('Sash')
 
 
 class SashActivity(Activity):

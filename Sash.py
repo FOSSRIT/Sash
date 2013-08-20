@@ -4,7 +4,7 @@ from sugar.datastore import datastore
 import os
 import json
 
-DEFAULT_WINDOW_SIZE = {'width': 1200, 'height': 900}
+DEFAULT_WINDOW_SIZE = {'width': 1100, 'height': 800}
 
 
 class Sash(Gtk.Window):
@@ -48,14 +48,8 @@ class Sash(Gtk.Window):
                                 row_spacing=10,
                                 margin_left=10)
 
-        self.badge_window = Gtk.Grid(
-            vexpand=True,
-            hexpand=True,
-            column_spacing=120,
-            margin_left=35)
-
-        self.badge_background = Gtk.Grid()
-        self.scrolled_window = Gtk.ScrolledWindow()
+        self.badge_window = Gtk.Grid(vexpand=True, hexpand=True)
+        self.scrolled_window = Gtk.ScrolledWindow(vexpand=True)
         self.scrolled_window.set_border_width(10)
         self.scrolled_window.set_policy(
             Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
@@ -63,9 +57,8 @@ class Sash(Gtk.Window):
         # Connect all the windows
         self.add(self.window)
         self.window.attach(self.toolbar, 0, 0, 1, 1)
-        self.window.attach(self.scrolled_window, 0, 5, 1, 3)
-        self.badge_background.attach(self.badge_window, 0, 0, 1, 3)
-        self.scrolled_window.add_with_viewport(self.badge_background)
+        self.window.attach(self.scrolled_window, 0, 3, 1, 3)
+        self.scrolled_window.add_with_viewport(self.badge_window)
 
         # Display the toolbar
         self.build_toolbar()
@@ -159,7 +152,7 @@ class Sash(Gtk.Window):
 
         # Create a container for the radio buttons
         self.sort_box = Gtk.Box(spacing=6)
-        self.toolbar.attach(self.sort_box, 0, 0, 3, 1)
+        self.toolbar.attach(self.sort_box, 0, 0, 4, 1)
 
         # Create a sort by nothing button and add a signal
         self.sort_none = Gtk.RadioButton(None, "None")

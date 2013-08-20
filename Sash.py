@@ -48,13 +48,13 @@ class Sash(Gtk.Window):
                                 row_spacing=10,
                                 margin_left=10)
 
-        self.badge_window = Gtk.Grid(hexpand=True,
-                                     column_spacing=120,
-                                     row_spacing=90,
-                                     margin_left=35,
-                                     margin_top=35)
+        self.badge_window = Gtk.Grid(
+            vexpand=True,
+            hexpand=True,
+            column_spacing=120,
+            margin_left=35)
 
-        self.badge_background = Gtk.Grid(hexpand=True)
+        self.badge_background = Gtk.Grid()
         self.scrolled_window = Gtk.ScrolledWindow()
         self.scrolled_window.set_border_width(10)
         self.scrolled_window.set_policy(
@@ -134,14 +134,6 @@ class Sash(Gtk.Window):
                                          "\nActivity: " +
                                          badge['activity'] +
                                          "\n\n" + badge['info'])
-
-            # Creates a trophy background if it is a new row
-            if column == 0:
-                background_image = Gtk.Image(hexpand=True, vexpand=True)
-                background_image.set_from_file('images/row.png')
-                self.badge_background.attach(
-                    background_image, column, row, 1, 1)
-
             self.badge_window.attach(badge_image, column, row, 1, 1)
 
             # If the next badge column is less than 2, increment the column

@@ -4,7 +4,7 @@ from sugar.datastore import datastore
 import os
 import json
 
-DEFAULT_WINDOW_SIZE = {'width': 1100, 'height': 800}
+DEFAULT_WINDOW_SIZE = {'width': 1200, 'height': 900}
 
 
 class Sash(Gtk.Window):
@@ -49,7 +49,7 @@ class Sash(Gtk.Window):
                                 margin_left=10)
 
         self.badge_window = Gtk.Grid(vexpand=True, hexpand=True)
-        self.scrolled_window = Gtk.ScrolledWindow(vexpand=True)
+        self.scrolled_window = Gtk.ScrolledWindow()
         self.scrolled_window.set_border_width(10)
         self.scrolled_window.set_policy(
             Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
@@ -74,11 +74,6 @@ class Sash(Gtk.Window):
     def draw_badges(self):
         """
         Reads the user's badges and displays them in the badge_window
-
-        :type sort: Boolean
-        :param sort: Sort the badges or not (default does not)
-
-        :type sort_by: string
         """
 
         # Clear the current screen of badges

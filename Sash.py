@@ -182,7 +182,7 @@ class Sash(Gtk.Window):
         self.search.set_tooltip_text(
             "Search for a badge name, activity, or date")
         self.search.connect("key-release-event", self.search_badge)
-        self.toolbar.attach(self.search, 1, 1, 2, 1)
+        self.toolbar.attach(self.search, 1, 1, 3, 1)
 
         # Display all toolbar items
         self.toolbar.show_all()

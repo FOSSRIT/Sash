@@ -20,27 +20,6 @@ class Sash(Gtk.Window):
         # How are the badges currently being sorted
         self.current_sort = None
 
-        # Find all of the activities that award badges
-        ds_objects, num_objects = datastore.find(
-            {'has_badges': 'True'})
-
-        # Create a list of tuples of all the activites
-        list_activites = [(ds_object.metadata['activity'],
-                           json.loads(ds_object.metadata['badge_list']))
-                          for ds_object in ds_objects
-                          if 'has_badges' in ds_object.metadata]
-
-        # Creates a dictionary of earned badges and populates it
-        self.earned_badges = {}
-        for activity, badges in list_activites:
-            for badge in badges.keys():
-                self.earned_badges[badge] = {'info': badges[badge]['criteria'],
-                                             'time': badges[badge]['time'],
-                                             'name': badge,
-                                             'bundle_id':
-                                             badges[badge]['bundle_id'],
-                                             'activity': activity}
-
         # Set up all the windows
         self.window = Gtk.Grid()
         self.toolbar = Gtk.Grid(hexpand=True,
@@ -63,6 +42,9 @@ class Sash(Gtk.Window):
         # Display the toolbar
         self.build_toolbar()
 
+        # Load the badges
+        self.load_badges()
+
         # Display the badges
         self.draw_badges()
 
@@ -70,6 +52,59 @@ class Sash(Gtk.Window):
         self.connect("delete-event", Gtk.main_quit)
         self.show_all()
         Gtk.main()
+
+    def load_badges(self):
+        """
+        Loads all of the user's badges that they have achieved.
+
+        This allows faster sorting and searching times by creating
+        a badge image and adding it to a dictionary instead of creating
+        a new badge image everytime a redisplay is called.
+        """
+
+        # Find all of the activities that award badges
+        ds_objects, num_objects = datastore.find(
+            {'has_badges': 'True'})
+
+        # Create a list of tuples of all the activites
+        list_activites = [(ds_object.metadata['activity'],
+                           json.loads(ds_object.metadata['badge_list']))
+                          for ds_object in ds_objects
+                          if 'has_badges' in ds_object.metadata]
+
+        # Creates a dictionary of earned badges and populates it
+        self.earned_badges = {}
+        for activity, badges in list_activites:
+            for badge in badges.keys():
+                self.earned_badges[badge] = {'info': badges[badge]['criteria'],
+                                             'time': badges[badge]['time'],
+                                             'name': badge,
+                                             'bundle_id':
+                                             badges[badge]['bundle_id'],
+                                             'activity': activity}
+
+        # Path to the images of the badges
+        path = os.path.expanduser('~/.local/share/badges')
+
+        # Create a dictionary of all the badge images
+        self.badge_images = {}
+
+        # Loop through all of the earned badges
+        for badge in self.earned_badges.values():
+
+            # Create an image and tooltip for the badge and display it
+            badge_image = Gtk.Image()
+            badge_image.set_from_file(os.path.join(path, badge['bundle_id'],
+                                      badge['name'] + '.png'))
+            badge_image.set_tooltip_text("Name: " + badge['name'] +
+                                         "\nDate Acquired: " +
+                                         badge['time'] +
+                                         "\nActivity: " +
+                                         badge['activity'] +
+                                         "\n\n" + badge['info'])
+
+            # Adds that badge image to the dictionary
+            self.badge_images[badge['name']] = badge_image
 
     def draw_badges(self):
         """
@@ -103,21 +138,10 @@ class Sash(Gtk.Window):
 
         column = 0
         row = 1
-        path = os.path.expanduser('~/.local/share/badges')
 
         # Loop through all of the badges
         for badge in badges:
-
-            # Create an image and tooltip for the badge and display it
-            badge_image = Gtk.Image()
-            badge_image.set_from_file(os.path.join(path, badge['bundle_id'],
-                                      badge['name'] + '.png'))
-            badge_image.set_tooltip_text("Name: " + badge['name'] +
-                                         "\nDate Acquired: " +
-                                         badge['time'] +
-                                         "\nActivity: " +
-                                         badge['activity'] +
-                                         "\n\n" + badge['info'])
+            badge_image = self.badge_images[badge['name']]
             self.badge_window.attach(badge_image, column, row, 1, 1)
 
             # If the next badge column is less than 2, increment the column

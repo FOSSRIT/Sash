@@ -46,10 +46,14 @@ else
         # save the old one and create the new file
         elif [ "$answer" == "n" ]; then
             old=$activity-*.xo
-            echo $old
-            echo $file
             mv ./$old ./$activity.old.xo
             mv ./$file ./$activity.new.xo
+
+        else
+            echo 'Invalid input.'
+            echo 'Aborting.'
+            rm -r dist/
+            exit 1
         fi
     else
         mv dist/* ./

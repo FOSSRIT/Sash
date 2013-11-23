@@ -13,7 +13,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="NoOrganize.svg">
+   sodipodi:docname="OrganizeByDate.svg">
   <metadata
      id="metadata18">
     <rdf:RDF>
@@ -22,7 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -58,9 +58,9 @@
      inkscape:window-height="703"
      id="namedview14"
      showgrid="false"
-     inkscape:zoom="10.117541"
-     inkscape:cx="28.719798"
-     inkscape:cy="25.758802"
+     inkscape:zoom="10"
+     inkscape:cx="28.713141"
+     inkscape:cy="26.288757"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -88,32 +88,32 @@
        x="0.88902867"
        y="31.824303" /></text>
   <rect
-     style="fill:none;stroke:#000000;stroke-opacity:1"
+     style="fill:#808080;stroke:#000000;stroke-opacity:1"
      id="rect5340"
      width="25.006075"
      height="24.808399"
      x="0.09883824"
      y="24.993925" />
   <rect
-     style="fill:none;stroke:#000000;stroke-opacity:1"
+     style="fill:#808080;stroke:#000000;stroke-opacity:1"
      id="rect5342"
      width="25.006077"
      height="24.70956"
      x="0.09883824"
      y="0.28436497" />
   <rect
-     style="fill:none;stroke:#000000;stroke-opacity:1"
+     style="fill:#808080;stroke:#000000;stroke-opacity:1"
      id="rect5344"
      width="24.70956"
      height="24.610722"
      x="25.104914"
      y="24.993925" />
   <rect
-     style="fill:none;stroke:#000000;stroke-opacity:1"
+     style="fill:#808080;stroke:#000000;stroke-opacity:1"
      id="rect5346"
      width="24.511883"
      height="24.70956"
-     x="25.104914"
+     x="25.204914"
      y="0.28436497" />
   <text
      xml:space="preserve"
@@ -139,7 +139,7 @@
        y="14.61591" /></text>
   <text
      xml:space="preserve"
-     style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+     style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
      x="0.9883824"
      y="19.063631"
      id="text5356"
@@ -194,7 +194,7 @@
        y="41.895264" /></text>
   <text
      xml:space="preserve"
-     style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+     style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
      x="0.39535296"
      y="43.77319"
      id="text5376"
@@ -238,7 +238,7 @@
        y="42.19178" /></text>
   <text
      xml:space="preserve"
-     style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+     style="font-size:16px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
      x="26.488647"
      y="44.168545"
      id="text5392"

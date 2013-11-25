@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from gi.repository import Gtk
 from sugar.datastore import datastore
+#import webkit
 import os
 import json
 
@@ -13,6 +14,8 @@ class Sash(Gtk.Window):
         Gtk.Window.__init__(self, title="Sash")
         self.set_default_size(DEFAULT_WINDOW_SIZE['width'],
                               DEFAULT_WINDOW_SIZE['height'])
+	# Email string
+	self.email_text = ''
 
         # Filtered string
         self.search_text = ''
@@ -208,6 +211,18 @@ class Sash(Gtk.Window):
         self.search.connect("key-release-event", self.search_badge)
         self.toolbar.attach(self.search, 1, 1, 3, 1)
 
+	#Create email bar
+	self.email = Gtk.Entry()
+	self.email.set_tooltip_text(
+	    "Email")
+	self.email.connect("key-release-event", self.check_email)
+	self.toolbar.attach(self.email, 5, 0, 3, 1)
+
+	# Create a button to push to Mozilla Open Badges
+	self.OBPush = Gtk.Button(label="Push", stock=None)
+	self.OBPush.connect("clicked", self.push_badges)
+	self.toolbar.attach(self.OBPush, 9, 0, 3, 1)
+
         # Display all toolbar items
         self.toolbar.show_all()
 
@@ -220,6 +235,15 @@ class Sash(Gtk.Window):
         # Redisplay the badges
         self.draw_badges()
 
+    def	push_badges(self, widget):
+	"""
+	Test
+	"""
+	if self.email_text == '':
+	    print "You entered nothing"
+	else:
+	    print self.email_text
+
     def search_badge(self, widget, key):
         """
         Search and display badges containing the search text
@@ -228,6 +252,14 @@ class Sash(Gtk.Window):
         # Save the searched text and draw the new set of badges
         self.search_text = widget.get_text()
         self.draw_badges()
+
+    def check_email(self, widget, key):
+        """
+        Make the email bar be saved
+        """
+
+        # Save the text for button checking
+        self.email_text = widget.get_text()
 
     def sort_badges(self, widget, sort_type):
         """

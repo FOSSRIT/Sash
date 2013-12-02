@@ -1,0 +1,8 @@
+{
+"name": "Epic Test Badge",
+"description": "For figuring out how to run issuerAPI properly.",
+"image": "https://raw.github.com/FOSSRIT/Sash/develop/example/101badge.png",
+"criteria": "http://www.google.com",
+"tags": ["test", "awesome"],
+"issuer": "https://raw.github.com/FOSSRIT/Sash/develop/example/organization.json"
+}

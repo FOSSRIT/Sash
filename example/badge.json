@@ -1,0 +1,15 @@
+{
+"uid": "01",
+"recipient": {
+  "type": "email",
+  "hashed": false,
+  "identity": "zab5156@rit.edu"
+},
+"image": "https://raw.github.com/FOSSRIT/Sash/develop/example/101badge.png",
+"issuedOn": 2013-12-02,
+"badge": "https://raw.github.com/FOSSRIT/Sash/develop/example/class.json",
+"verify": {
+  "type": "hosted",
+  "url": "https://raw.github.com/FOSSRIT/Sash/develop/example/badge.json"
+}
+}

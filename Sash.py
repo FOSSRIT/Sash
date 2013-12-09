@@ -4,6 +4,7 @@ from sugar.datastore import datastore
 #import webkit
 import os
 import json
+import webbrowser
 
 DEFAULT_WINDOW_SIZE = {'width': 1200, 'height': 900}
 
@@ -14,9 +15,7 @@ class Sash(Gtk.Window):
         Gtk.Window.__init__(self, title="Sash")
         self.set_default_size(DEFAULT_WINDOW_SIZE['width'],
                               DEFAULT_WINDOW_SIZE['height'])
-	# Email string
-	self.email_text = ''
-
+	
         # Filtered string
         self.search_text = ''
 
@@ -235,14 +234,15 @@ class Sash(Gtk.Window):
         # Redisplay the badges
         self.draw_badges()
 
+	#Push to Open Badges
     def	push_badges(self, widget):
-	"""
-	Test
-	"""
-	if self.email_text == '':
-	    print "You entered nothing"
-	else:
-	    print self.email_text
+	#Push to Mozilla Open badges.
+	
+	#Step 1: open browser window to: https://login.persona.org/sign_in
+	webbrowser.open(https://login.persona.org/sign_in [, new=0[, autoraise=True]])
+	
+	#...That's about it.
+
 
     def search_badge(self, widget, key):
         """

@@ -1,8 +1,9 @@
 [Activity]
 name = Sash
-bundle_id = org.laptop.SashActivity 
-exec = sugar-activity activity.SashActivity
+bundle_id = org.laptop.Sash
+exec = sugar-activity Sash.Sash
 icon = sash
 show_launcher = yes
 activity_version = 1
+host_version = 1
 license = GPLv2+

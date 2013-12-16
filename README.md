@@ -10,24 +10,26 @@ If you are interested in contributing to Sash, we recommend developing on a mach
 
 Open a command prompt and run:
 
-yum install sugar
-yum install sugar-emulator
+    yum install sugar
+    yum install sugar-emulator
 
 navigate to where you want to put the Sash repo
 
-git clone https://github.com/FOSSRIT/Sash.git -b develop
+    git clone https://github.com/FOSSRIT/Sash.git -b develop
 
 navigate into the Sash repository
 
-python setup.py OR ./setup.py
+    python setup.py 
+OR 
+    ./setup.py
 
 This will generate a .xo file that can be installed onto an XO or onto the sugar emulator
 
-sugar-install-bundle "sash.xo filename here"
+    sugar-install-bundle "sash.xo filename here"
 
 This installs Sash into the sugar emulator
 
-sugar-emulator 
+    sugar-emulator 
 
 This will open the emulator and from there you can open the Sash activity to test it
 

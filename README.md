@@ -13,15 +13,13 @@ Open a command prompt and run:
     yum install sugar
     yum install sugar-emulator
 
-navigate to where you want to put the Sash repo
+Navigate to where you want to put the Sash repo
 
     git clone https://github.com/FOSSRIT/Sash.git -b develop
 
-navigate into the Sash repository
+Navigate into the Sash repository
 
     python setup.py 
-OR 
-    ./setup.py
 
 This will generate a .xo file that can be installed onto an XO or onto the sugar emulator
 

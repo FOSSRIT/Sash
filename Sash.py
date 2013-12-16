@@ -1,19 +1,17 @@
-#!/usr/bin/python
-from gi.repository import Gtk
-from sugar.datastore import datastore
-#import webkit
+from gi.repository import Gtk, WebKit
+from sugar3.datastore import datastore
+from sugar3.activity import activity
 import os
 import json
 
 DEFAULT_WINDOW_SIZE = {'width': 1200, 'height': 900}
 
 
-class Sash(Gtk.Window):
+class Sash(activity.Activity):
+    def __init__(self, handle):
+        activity.Activity.__init__(self, handle)
+	print "got here"
 
-    def __init__(self):
-        Gtk.Window.__init__(self, title="Sash")
-        self.set_default_size(DEFAULT_WINDOW_SIZE['width'],
-                              DEFAULT_WINDOW_SIZE['height'])
 	# Email string
 	self.email_text = ''
 
@@ -22,6 +20,13 @@ class Sash(Gtk.Window):
 
         # How are the badges currently being sorted
         self.current_sort = None
+	
+	#gtkstuff
+	self.bindow = Gtk.Window()
+	box = Gtk.Box(homogeneous=False, spacing=0)
+	browser = WebKit.WebView()
+	self.bindow.add(box)
+	box.pack_start(browser, expand=True, fill=True, padding=0)
 
         # Set up all the windows
         self.window = Gtk.Grid()
@@ -37,10 +42,11 @@ class Sash(Gtk.Window):
             Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
 
         # Connect all the windows
-        self.add(self.window)
+        #self.add(self.window)
         self.window.attach(self.toolbar, 0, 0, 1, 1)
         self.window.attach(self.scrolled_window, 0, 3, 1, 3)
         self.scrolled_window.add_with_viewport(self.badge_window)
+
 
         # Display the toolbar
         self.build_toolbar()
@@ -52,9 +58,10 @@ class Sash(Gtk.Window):
         self.draw_badges()
 
         # Connects an exit function to the window
-        self.connect("delete-event", Gtk.main_quit)
+        #self.connect("delete-event", Gtk.main_quit)
+	self.set_canvas(self.window)
         self.show_all()
-        Gtk.main()
+	browser.open("http://www.google.com")
 
     def load_badges(self):
         """
@@ -239,6 +246,7 @@ class Sash(Gtk.Window):
 	"""
 	Test
 	"""
+	self.bindow.show_all()
 	if self.email_text == '':
 	    print "You entered nothing"
 	else:
@@ -283,6 +291,7 @@ class Sash(Gtk.Window):
             ds_objects[x].destroy()
             datastore.delete(ds_objects[x].object_id)
 
-
+'''
 if __name__ == "__main__":
     Sash()
+'''

@@ -13,11 +13,11 @@ Open a command prompt and run:
     yum install sugar
     yum install sugar-emulator
 
-Navigate to where you want to put the Sash repo
+Navigate to where you want to put the Sash repo and clone the repo
 
     git clone https://github.com/FOSSRIT/Sash.git -b develop
 
-Navigate into the Sash repository
+Navigate into the Sash repository and run the setup script
 
     python setup.py 
 
@@ -25,11 +25,11 @@ This will generate a .xo file that can be installed onto an XO or onto the sugar
 
     sugar-install-bundle "sash.xo filename here"
 
-This installs Sash into the sugar emulator
+Then you can run the emulator
 
     sugar-emulator 
 
-This will open the emulator and from there you can open the Sash activity to test it
+From there you can open the Sash activity to test it
 
 
 
